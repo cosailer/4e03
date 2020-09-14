@@ -2,17 +2,17 @@
 
 ## state: p3 of hardware version E4
 
-this project is an attempt to develop an alternate firmware for the Epilot E4 powerbank. Epilot E4 is a smart powerbank that is capable of replacing its 4 18650 battery cells. It utilizes an atmega168pa to contorl and monitor the charging of each individual cell, so that salvaged cells can be mixed in use.
+this project is an attempt to develop an alternate firmware for the Epilot E4 powerbank. Epilot E4 is a smart powerbank that is capable of replacing its 4 18650 battery cells. It utilizes an atmega168pa to control and monitor the charging of each individual cell, so that salvaged cells can be mixed in use.
 
 currently there are two hardware versions observed, E4 and S4.
 
 ## project plan:
 
-p1, research the schematics.
-p2, research the functions the original firmware.
-p3, develop a preliminary arduino testing code to fullfill the functions.
-p4, port the arduino code to avr c code.
-p5, additional: make improvements
+*p1, research the schematics.
+*p2, research the functions the original firmware.
+*p3, develop a preliminary arduino testing code to fullfill the functions.
+*p4, port the arduino code to avr c code.
+*p5, additional: make improvements
 
 ## project details:
 
