@@ -24,6 +24,8 @@ p1: epilot_v1.0.pdf is the schematic of hardware version E4, here are some main 
 * temperature sensor U8: unknow (marking BLJW)
 * display: controller ST7565 with 128x32
 
+![epilot](/front_s.jpg)
+
 p2: kown functions that derived from the schematic
 1. detect charger input
 2. detect usb load
