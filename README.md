@@ -24,7 +24,7 @@ p1: epilot_v1.0.pdf is the schematic of hardware version E4, here are some main 
 * temperature sensor U8: unknow (marking BLJW)
 * display: controller ST7565 with 128x32
 
-<img src="https://raw.githubusercontent.com/cosailer/4e03/master/front_s.jpg" width="300" height="500">
+<img src="https://raw.githubusercontent.com/cosailer/4e03/master/front_s.jpg" width="400" height="500">
 
 p2: kown functions that derived from the schematic
 1. detect charger input
@@ -43,13 +43,13 @@ p2: kown functions that derived from the schematic
 
 p3: in development, basic battery charging and usb output is working, display also works. the picture below shows the development setup. to the left is a hand made usbasp, to the right is a hand made power logger(from great scott) displaying the current information of cell in socket 4.
 
-<img src="https://raw.githubusercontent.com/cosailer/4e03/master/E4_0_s.jpg" width="500" height="300">
+<img src="https://raw.githubusercontent.com/cosailer/4e03/master/E4_0_s.jpg" width="500" height="400">
 
 p4: in development
 
 p5: some random thoughts
 
-as can be seen from the schematics, we have almost used all pins of the atmega168pa, the charger enable for battery 1 and 2 even shares the same pin. also the external crystal pins, I2C port and UART port are occupied as well. there fore the function upgradeability is limited. however the onboard temperature sensor U8 is not working as intended since it only mesures PCB instead of cell temperature. therefore maybe PC0 could be freed, plus the unused PD7, we can have 2 pins to implement extra function.
+originally I plan to add some I2C sensors to the powerbank, however as can be seen from the schematics, we have almost used all pins of the atmega168pa, the charger enable for battery 1 and 2 even shares the same pin. also the external crystal pins, I2C port and UART port are occupied. therefore the function upgradeability is limited. however the onboard temperature sensor U8 is not working as intended since it only mesures PCB instead of cell temperature. maybe PC0 could be freed, plus the unused PD7, we can have 2 pins to implement extra functions.
 
 if we upgrade the atmega168pa to atmega328pb, then 2 extra pins( pin 3 and pin 6) can also be used.
 
