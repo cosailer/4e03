@@ -24,7 +24,7 @@ p1: epilot_v1.0.pdf is the schematic of hardware version E4, here are some main 
 * temperature sensor U8: unknow (marking BLJW)
 * display: controller ST7565 with 128x32
 
-![epilot](/front_s.jpg)
+<img src="https://raw.githubusercontent.com/cosailer/4e03/master/front_s.jpg" width="300" height="500">
 
 p2: kown functions that derived from the schematic
 1. detect charger input
@@ -41,7 +41,10 @@ p2: kown functions that derived from the schematic
 12. in LED light on state, short press button to turn on the SOS light
 13. in SOS light on state, short press button to turn off LED light
 
-p3: in development, basic battery charging and usb output is working, display also works
+p3: in development, basic battery charging and usb output is working, display also works. the picture below shows the development setup. to the left is a hand made usbasp, to the right is a hand made power logger(from great scott) displaying the current information of cell in socket 4.
+
+<img src="https://raw.githubusercontent.com/cosailer/4e03/master/E4_0_s.jpg" width="500" height="300">
+
 p4: in development
 
 p5: some random thoughts
