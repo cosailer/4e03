@@ -25,19 +25,19 @@ p1: epilot_v1.0.pdf is the schematic of hardware version E4, here are some main 
 * display: controller ST7565 with 128x32
 
 p2: kown functions that derived from the schematic
-1 detect charger input
-2 detect usb load
-3 measure the voltage of each cell
-4 charge each cell until 4.2v
-5 enable/disable boost converter
-6 measure the voltage of usb output port
-7 measure the current of two usb output port
-8 display info on the lcd screen
-9 turn off the screen after 1 min of inactivity
-10 long press the button to wake
-11 in wake state, short press button to turn on the LED light
-12 in LED light on state, short press button to turn on the SOS light
-13 in SOS light on state, short press button to turn off LED light
+1. detect charger input
+2. detect usb load
+3. measure the voltage of each cell
+4. charge each cell until 4.2v
+5. enable/disable boost converter
+6. measure the voltage of usb output port
+7. measure the current of two usb output port
+8. display info on the lcd screen
+9. turn off the screen after 1 min of inactivity
+10. long press the button to wake
+11. in wake state, short press button to turn on the LED light
+12. in LED light on state, short press button to turn on the SOS light
+13. in SOS light on state, short press button to turn off LED light
 
 p3: in development, basic battery charging and usb output is working, display also works
 p4: in development
