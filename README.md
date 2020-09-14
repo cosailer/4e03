@@ -8,11 +8,11 @@ currently there are two hardware versions observed, E4 and S4.
 
 ## project plan:
 
-*p1, research the schematics.
-*p2, research the functions the original firmware.
-*p3, develop a preliminary arduino testing code to fullfill the functions.
-*p4, port the arduino code to avr c code.
-*p5, additional: make improvements
+* p1, research the schematics.
+* p2, research the functions the original firmware.
+* p3, develop a preliminary arduino testing code to fullfill the functions.
+* p4, port the arduino code to avr c code.
+* p5, additional: make improvements
 
 ## project details:
 
