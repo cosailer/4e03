@@ -20,7 +20,7 @@ p1: epilot_v1.0.pdf is the schematic of hardware version E4, here are some main 
 * main controller: atmega168pa
 * 4 charger IC: TP4055
 * boost converter IC: MT5033
-* 2.5v LDO U2: unknow (marking A521)
+* 2.5v LDO U2: unknow (marking A521), replaced with 2.8v LDO LP2985M5-2.8
 * temperature sensor U8: unknow (marking BLJW)
 * display: controller ST7565 with 128x32
 
@@ -30,7 +30,7 @@ p2: kown functions that derived from the schematic
 1. detect charger input
 2. detect usb load
 3. measure the voltage of each cell
-4. charge each cell until 4.2v
+4. charge each cell until 4.2v, disable usb output when cell drops to 2.7v
 5. enable/disable boost converter
 6. measure the voltage of usb output port
 7. measure the current of two usb output port
