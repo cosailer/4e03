@@ -25,6 +25,7 @@ p1: epilot_v1.0.pdf is the schematic of hardware version E4, here are some main 
 <img src="https://raw.githubusercontent.com/cosailer/4e03/master/front_s.jpg" width="400" height="500">
 
 p2: arduino code v1.0 is complete
+
 kown functions that derived from the schematic
 1. detect usb charger input [done]
 2. detect usb output load [almost]
@@ -52,9 +53,9 @@ p3: the preliminary test arduino code is complete, the file is eploit_arduino.in
     3900|t  24|I   0
 ```
 there are 3 columns,
-*first column shows the voltage of 4 batteries in mV.
-*second column, U3537 is the voltage of the USB output in mV, it is low because boost converter is not enabled. R2760 is the VCC for the atmega168pa in mV. T266 is the measured ADC value from onboard temperature sensor U8, no convertion is done. t24 is the reading from the internal temperature sensor of atmega168pa.
-*thrid column, CHG:1 shows whether the usb input charger is inserted. USB:1 shows whether the USB load is present. the last two I0 is the current of two USB output port in mA.
+* first column shows the voltage of 4 batteries in mV.
+* second column, U3537 is the voltage of the USB output in mV, it is low because boost converter is not enabled. R2760 is the VCC for the atmega168pa in mV. T266 is the measured ADC value from onboard temperature sensor U8, no convertion is done. t24 is the reading from the internal temperature sensor of atmega168pa.
+* thrid column, CHG:1 shows whether the usb input charger is inserted. USB:1 shows whether the USB load is present. the last two I0 is the current of two USB output port in mA.
 
 the picture below shows the development setup. to the left is a hand made usbasp, to the right is a hand made power logger(from great scott) displaying the current information of cell in socket 4.
 
@@ -67,10 +68,10 @@ some notes:
 
 some data:
 single cell in socket 4, current measured on battery side:
-    idle, lcd back light on, led on: 30mA
-    idle, lcd back light on : 4.72mA
-    idle, lcd back light off: 3.50mA
-    system sleep: 0.65mA
+1. idle, lcd back light on, led on: 30mA
+2. idle, lcd back light on : 4.72mA
+3. idle, lcd back light off: 3.50mA
+4. system sleep: 0.65mA
 
 
 p4: in development:
