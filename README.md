@@ -27,20 +27,20 @@ p1: epilot_v1.0.pdf is the schematic of hardware version E4, here are some main 
 p2: arduino code v1.0 is complete
 
 kown functions that derived from the schematic
-1. detect usb charger input [done]
-2. detect usb output load [almost]
-3. measure the voltage of each cell [almost]
-4. charge each cell to full (4.2v) [done]
+1. detect usb charger input **[done]**
+2. detect usb output load **[almost]**
+3. measure the voltage of each cell **[almost]**
+4. charge each cell to full (4.2v) **[done]**
 5. disable usb output when cell drops to 2.7v
-6. enable/disable boost converter [done]
-7. measure the voltage of usb output port [done]
-8. measure the current of two usb output port [done]
-9. display information on the lcd screen [done]
-10. turn off the display back light after 10 seconds of inactivity [done]
-11. in none charging state, go to sleep after 20 seconds of inactivity [done]
-12. long press the button to sleep [done]
-13. in sleep state, short press button to wake [done]
-13. in wake state, short press button to turn on the LED light [done]
+6. enable/disable boost converter **[done]**
+7. measure the voltage of usb output port **[done]**
+8. measure the current of two usb output port **[done]**
+9. display information on the lcd screen **[done]**
+10. turn off the display back light after 10 seconds of inactivity **[done]**
+11. in none charging state, go to sleep after 20 seconds of inactivity **[done]**
+12. long press the button to sleep **[done]**
+13. in sleep state, short press button to wake **[done]**
+13. in wake state, short press button to turn on the LED light **[done]**
 14. in LED light on state, short press button to turn on the SOS light
 15. in SOS light on state, short press button to turn off LED light
 
@@ -62,7 +62,7 @@ the picture below shows the development setup. to the left is a hand made usbasp
 <img src="https://raw.githubusercontent.com/cosailer/4e03/master/E4_0_s.jpg" width="500" height="400">
 
 some notes:
-1. the voltage/current measurement is accurate enough for casual use, however, when cell is charging, voltage measurement cannot show the actual cell voltage, only the voltage connected to charger
+1. the voltage/current measurement is accurate enough for casual indication, however, when cell is charging, voltage measurement cannot show the actual cell voltage, only the voltage connected to charger
 2. usb load detection is a little tricky. when the boost converter is enabled, it is not possible to detect usb load, only by measuring usb output current at the moment. however, if the current is small, it will not be detectable, which is a problem
 3. both display back light led and the front led light are connected to hardware pwm pins, the brightness of both can be adjusted easily
 
@@ -82,6 +82,8 @@ originally I plan to add some I2C sensors to the powerbank, however as can be se
 
 if we upgrade the atmega168pa to atmega328pb, then 2 extra pins( pin 3 and pin 6) can also be used, also, they seem to be the second I2C channel, so adding a I2C sensor is possible again!
 
+I have another interesting way to add the I2C sensor boards, since the signal lines of USB port 1 is not connected, they can be connected directly to the I2C port of atmega328pb, then the sensor boards can be inserted like a USB dongle, and the charging ability should not be affected. A LDO to convert 4v-5v to 3.3v may be needed.
+
 some ideas:
 1. upgrade atmega168pa to atmega328pb, more pin, more flash/ram/eeprom
 2. remove sensor U8, move the connection from PB4 to PC0 to add the ability to measure usb input voltage
@@ -92,5 +94,6 @@ some ideas:
 7. move pin PD0 and PD1, free up the UART for sensors or even external microcontrollers
 8. implement the floppy bird game or the chrome jumping dinosaur game, since there is only one button
 9. another idea is to record charging history of each cell in the eeprom to improve charging, not sure if its possible
-
+10. add I2C sensor boards on the USB output port
+11. lead the ICSP header outside the case for programming
 
