@@ -54,7 +54,7 @@ p3: the preliminary test arduino code is complete, the file is eploit_arduino.in
 ```
 there are 3 columns,
 * first column shows the voltage of 4 batteries in mV.
-* second column, U3537 is the voltage of the USB output in mV, it is low because boost converter is not enabled. R2760 is the VCC for the atmega168pa in mV. T266 is the measured ADC value from onboard temperature sensor U8, no convertion is done. t24 is the reading from the internal temperature sensor of atmega168pa.
+* second column, U3537 is the voltage of the USB output in mV, it is low because boost converter is not enabled. R2760 is the VCC for the atmega168pa in mV. T266 is the measured ADC value from onboard temperature sensor U8, no conversion is done. t24 is the reading from the internal temperature sensor of atmega168pa.
 * thrid column, CHG:1 shows whether the usb input charger is inserted. USB:1 shows whether the USB load is present. the last two I0 is the current of two USB output port in mA.
 
 the picture below shows the development setup. to the left is a hand made usbasp, to the right is a hand made power logger(from great scott) displaying the current information of cell in socket 4.
@@ -67,6 +67,7 @@ some notes:
 3. both display back light led and the front led light are connected to hardware pwm pins, the brightness of both can be adjusted easily
 
 some data:
+
 single cell in socket 4, current measured on battery side:
 1. idle, lcd back light on, led on: 30mA
 2. idle, lcd back light on : 4.72mA
@@ -75,9 +76,11 @@ single cell in socket 4, current measured on battery side:
 
 
 p4: in development:
+
 the arduino replacement firmware is mostly finished. after some minor adjustments, the onboard atmega168pa will be replaced with atmega328pb and focus will be porting arduino code to avr code. thus the original unmodified hardware version of E4 and S4 will likely only have the arduino firmware.
 
 p5: some random thoughts
+
 originally I plan to add some I2C sensors to the powerbank, however as can be seen from the schematics, we have almost used all pins of the atmega168pa, the charger enable for battery 1 and 2 even shares the same pin. also the external crystal pins, I2C port and UART port are occupied. therefore the function upgradeability is limited. however the onboard temperature sensor U8 is a bad idea since it only mesures PCB instead of cell temperature. maybe PC0 could be freed, plus the unused PD7, we can have 2 pins to implement extra functions.
 
 if we upgrade the atmega168pa to atmega328pb, then 2 extra pins( pin 3 and pin 6) can also be used, also, they seem to be the second I2C channel, so adding a I2C sensor is possible again!
