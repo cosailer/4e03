@@ -99,4 +99,5 @@ some ideas:
 9. another idea is to record charging history of each cell in the eeprom to improve charging, not sure if its possible
 10. add I2C sensor boards on the USB output port
 11. lead the ICSP header outside the case for programming
+12. onboard MT5033 has a upgraded version MT5035
 
