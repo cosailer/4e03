@@ -69,11 +69,13 @@ some notes:
 some data:
 
 single cell in socket 4, current measured on battery side:
-1. idle, lcd back light on, led on: 30mA
-2. idle, lcd back light on : 4.72mA
-3. idle, lcd back light off: 3.50mA
-4. system sleep: 0.65mA
-
+```
+                                     [original]  [mod1]
+1. idle, lcd back light on, led on:     30mA      
+2. idle, lcd back light on :          4.72mA      4.60mA
+3. idle, lcd back light off:          3.50mA      3.42mA
+4. system sleep:                      0.65mA      0.59mA
+```
 
 p4: in development:
 
