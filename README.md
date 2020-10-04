@@ -65,6 +65,7 @@ some notes:
 1. the voltage/current measurement is accurate enough for casual indication, however, when cell is charging, voltage measurement cannot show the actual cell voltage, only the voltage connected to charger
 2. usb load detection is a little tricky. when the boost converter is enabled, it is not possible to detect usb load, only by measuring usb output current at the moment. however, if the current is small, it will not be detectable, which is a problem
 3. both display back light led and the front led light are connected to hardware pwm pins, the brightness of both can be adjusted easily
+4. the onboard 2.5v ldo has no reverse voltage protection, however the TPS799 seemed to be OK for 3.3v at Vout when program the MCU
 
 some data:
 
