@@ -1,10 +1,17 @@
 # project 4e03
 
-## state: p3 of hardware version E4
+## state: p5 of hardware version E4
 
 this project is an attempt to develop an alternate firmware for the Epilot E4 powerbank. Epilot E4 is a smart powerbank that is capable of replacing its 4 18650 battery cells. It utilizes an atmega168pa to control and monitor the charging of each individual cell, so that salvaged cells can be mixed in use. currently there are two hardware versions observed, E4 and S4, but the firmwares from both versions seems identical.
 
-## project plan:
+currently version E4 are not on the market anymore, another similar powerbank named TOMO M4, which has the same UI and functions as the E4 can still be found. However, M4 uses a PIC16F1933 and has no programmimg port on board. Support on M4 is planned after E4 and S4.
+
+The original firmware has the following known problems:
+1, when output charging current is below around 100mA, the output is turned off, this is problematic for low current applications.
+2, cell cutoff output voltage is around 3V, not adjustable for power cells
+3, self discharge current is a little high.
+
+## project plan: E4 -> S4 -> M4
 
 * p1, research the schematics
 * p2, research the functions the original firmware
@@ -41,7 +48,7 @@ kown functions that derived from the schematic
 12. long press the button to sleep **[done]**
 13. in sleep state, short press button to wake **[done]**
 13. in wake state, short press button to turn on the LED light **[done]**
-14. in LED light on state, short press button to turn on the SOS light
+14. in LED light on state, short press button to turn on the SOS light [not planned]
 15. in SOS light on state, short press button to turn off LED light
 
 p3: the preliminary test arduino code is complete, the file is eploit_arduino.ino, compiled binary is arduino_v1.0.bin. most basic functions are implemented and are usable, but the software structure should be improved.
@@ -78,9 +85,16 @@ single cell in socket 4, current measured on battery side:
 4. system sleep:                      0.65mA      0.59mA
 ```
 
-p4: in development:
+p4: the preliminary avr code is complete, below are some notes:
 
-the arduino replacement firmware is mostly finished. after some minor adjustments, the onboard atmega168pa will be replaced with atmega328pb and focus will be porting arduino code to avr code. thus the original unmodified hardware version of E4 and S4 will likely only have the arduino firmware.
+1, timer0 is used to generate 32ms trigger, which is used for global timing. since there are many timing requirements, a global timer is preferred.
+2, the powerful u8g2 library is used, each cell voltage is displayed even when usb output is discharging 
+3, 3 additional status is also shown: if the usb port has loads, if the internal boost converter is turned on, if therer is input voltage. the chip vcc and usb output voltage is also shown.
+4, the unused chip peripherals are turned off to save power, bod and wdt are also disabled to decrease sleep current.
+5, a minimum discharge voltage is set, if all cells are below, system sleeps
+6, atmega168pa has a internal temperature sensor, which is measured with 1.1v voltage reference. the cells and vcc are measured with vcc as reference.
+7, current measurement is not ideal, but works. assume output current to be 2A, with 0.1Ω shunt resistor, the current signal is 0.2V, which is around 18% of 1.1v reference 
+
 
 p5: some random thoughts
 
@@ -90,17 +104,19 @@ if we upgrade the atmega168pa to atmega328pb, then 2 extra pins( pin 3 and pin 6
 
 I have another interesting way to add the I2C sensor boards, since the signal lines of USB port 1 is not connected, they can be connected directly to the I2C port of atmega328pb, then the sensor boards can be inserted like a USB dongle, and the charging ability should not be affected. A LDO to convert 4v-5v to 3.3v may be needed.
 
+to monitor the discharge current(however unreliable, they are still useful information), the port enable on PD1 can be moved to PD0 to free up the UART TX, then connect the TX pin to one USB port to output to PC. 
+
 some ideas:
 1. upgrade atmega168pa to atmega328pb, more pin, more flash/ram/eeprom
 2. remove sensor U8, move the connection from PB4 to PC0 to add the ability to measure usb input voltage
-3. change the backlight led to change color of the display
-4. change the button to a softer one or a touch button
+3. change the backlight led to change color of the display [done]
+4. change the button to a softer one or a touch button [done]
 5. add invidual enable pin for each charger IC instead of two ICs per pin on PB6 and PB7
 6. increase the voltage divider resisters to decrease the cell self-discharging current, maybe also add a capacitor
-7. move pin PD0 and PD1, free up the UART for sensors or even external microcontrollers
+7. move pin PD0 and PD1, free up the UART for sensors, external microcontrollers or data output
 8. implement the floppy bird game or the chrome jumping dinosaur game, since there is only one button
 9. another idea is to record charging history of each cell in the eeprom to improve charging, not sure if its possible
 10. add I2C sensor boards on the USB output port
-11. lead the ICSP header outside the case for programming
+11. lead the ICSP header outside the case for programming [done]
 12. onboard MT5033 has a upgraded version MT5035
-
+12. onboard TP4055 has a upgraded version TP4057
