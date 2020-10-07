@@ -78,11 +78,12 @@ some data:
 
 single cell in socket 4, current measured on battery side:
 ```
-                                     [original]  [mod1]
+                                      [E4]        [mod1]
 1. idle, lcd back light on, led on:     30mA      
 2. idle, lcd back light on :          4.72mA      4.60mA
 3. idle, lcd back light off:          3.50mA      3.42mA
-4. system sleep:                      0.65mA      0.59mA
+4. system sleep:                      0.65mA      0.40mA
+5. MCU removed:                                   0.14mA
 ```
 
 p4: the preliminary avr code is complete, below are some notes:
