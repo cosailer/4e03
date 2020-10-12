@@ -6,5 +6,5 @@ this project is an attempt to develop an alternate firmware for the Epilot E4 po
 
 the following image shows the modified UI
 
-<img src="https://raw.githubusercontent.com/cosailer/4e03/master/image/e403_1.jpg" height="400">
+<img src="https://raw.githubusercontent.com/cosailer/4e03/master/image/e403_1.jpg" height="300">
 
