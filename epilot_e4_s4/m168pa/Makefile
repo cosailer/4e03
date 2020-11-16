@@ -36,7 +36,7 @@ upload:
 	avrdude -c usbasp -p m168p -e -U flash:w:main.hex -v
 	
 download:
-	avrdude -c usbasp -p m168p -e -U flash:w:epilot.hex:r -v
+	avrdude -c usbasp -p m168p -e -U flash:w:backup.bin:r -v
 
 check:
 	avrdude -c usbasp -p m168p -v

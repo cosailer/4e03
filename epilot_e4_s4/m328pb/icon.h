@@ -1,0 +1,12 @@
+#define socket_width 8
+#define socket_height 8
+static const unsigned char socket_bits[] U8X8_PROGMEM = { 0x24, 0x24, 0x7e, 0x7e, 0x7e, 0x7e, 0x18, 0x78 };
+
+#define load_width 8
+#define load_height 8
+static const unsigned char load_bits[] U8X8_PROGMEM = { 0x40, 0xfe, 0x82, 0x82, 0x82, 0xfe, 0xaa, 0xfe };
+
+#define boost_width 8
+#define boost_height 8
+static const unsigned char boost_bits[] U8X8_PROGMEM = { 0x08, 0x1c, 0x3e, 0x7f, 0x1c, 0x5d, 0x41, 0x3e };
+
