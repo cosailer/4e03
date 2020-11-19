@@ -1,0 +1,5 @@
+E4_log : some battery measurement log
+m168pa : firmware source for original E4 and S4 hardware 
+m328pb :  firmware source for modified E4
+backup.bin : stock firmware
+eploit_arduino.ino : arduino test code
