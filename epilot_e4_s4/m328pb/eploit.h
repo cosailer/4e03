@@ -157,6 +157,7 @@ void disable_usb_output(void);
 void optimize_power(void);
 void init_sys(void);
 uint16_t read_adc(uint8_t ref, uint8_t ch);
+uint16_t read_adc_once(uint8_t ref, uint8_t ch);
 uint16_t calc_voltage(uint32_t raw);
 uint16_t calc_current(uint32_t raw);
 uint8_t calc_scale(uint16_t voltage);
@@ -386,9 +387,24 @@ void init_sys(void)
 }
 
 //take adc measurements, ref 1: AVcc, 3: 1.1v, ch 0-8
+//averaging 4 measurements
 uint16_t read_adc(uint8_t ref, uint8_t ch)
 {
-    //uint16_t adc;
+    uint8_t size = 4;
+    uint16_t adc = 0;
+    
+    for(int i = 0; i < size; i++)
+    {
+        adc = adc + read_adc_once(ref, ch);
+    }
+    
+    return adc/size;
+}
+
+//take adc measurements, ref 1: AVcc, 3: 1.1v, ch 0-8
+uint16_t read_adc_once(uint8_t ref, uint8_t ch)
+{
+    uint16_t adc = 0;
     
     //diable adc
     ADCSRA = 0;
@@ -405,17 +421,34 @@ uint16_t read_adc(uint8_t ref, uint8_t ch)
     //Enable ADC, set prescaller to /64, ADC clock of 8mHz/64=125kHz
     ADCSRA |= (1<<ADEN)|(1<<ADPS2)|(1<<ADPS1);
     
+    _delay_ms(1);
+    
     //dummy read
     ADCSRA |= (1<<ADSC);
     while ((ADCSRA & (1<<ADSC)) != 0);
 
-    _delay_ms(10);
+    _delay_ms(1);
     
+    //over sampling, increase adc from 10bit to 11bit virtual
+    //sum up 4 reading, right shift 1bit, divide2^11
+    for(int i = 0; i < 4; i++)
+    {
+        //_delay_ms(1);
+        ADCSRA |= (1<<ADSC);
+        while ((ADCSRA & (1<<ADSC)) != 0);
+        adc = adc + ADC;
+    }
+    
+    //return the 11 bit result
+    adc = (adc >> 1);
+    return adc;
+    
+    //old 10 bit reading
     //actual read
-    ADCSRA |= (1<<ADSC);
-    while ((ADCSRA & (1<<ADSC)) != 0);
+    //ADCSRA |= (1<<ADSC);
+    //while ((ADCSRA & (1<<ADSC)) != 0);
      
-    return ADC;
+    //return ADC;
 }
 
 //button isr functions
@@ -482,7 +515,7 @@ ISR (INT1_vect)
 uint16_t calc_voltage(uint32_t raw)
 {
     uint16_t tmp = 0;
-    middle = raw*vcc/512;
+    middle = raw*vcc/1024;
     
     tmp = (uint16_t)middle;
     tmp = limit16(tmp, 0, 9999);
@@ -490,12 +523,12 @@ uint16_t calc_voltage(uint32_t raw)
     return tmp;
 }
 
-//calculate current in mA, c_usb_1*1100*10/1024; the 1.1v internal reference is used
+//calculate current in mA, c_usb_1*1100*10/2048; the 1.1v internal reference is used
 //to do: add sanity check
 uint16_t calc_current(uint32_t raw)
 {
     uint16_t tmp = 0;
-    middle = raw*1375/128;
+    middle = raw*1375/256;
     
     tmp = (uint16_t)middle;
     tmp = limit16(tmp, 0, 9999);
@@ -556,8 +589,9 @@ void read_info()
     //read controller vcc
     //set reference to AVcc
     //channel 0b1110 is the 1.1v reference
+    //1.1*2048*1000/ADC, 1.1*2048*1000 = 2252800
     middle = read_adc(1, 0b1110);
-    vcc = 1126400/middle;
+    vcc = 2252800/middle;
     
     //read battery voltage
     //calculate adc in mV in between reading, v_b1*vcc*2/1024, for a stable reading
@@ -597,9 +631,9 @@ void read_info()
     }
     
     //read usb output voltage
-    //due to voltage divider, v_usb*vcc*2.24/1024
+    //due to voltage divider, v_usb*vcc*2.24/2048
     middle = read_adc(1, U_USB_OUT_ADC);
-    u_usb_out = middle*vcc*7/3200;
+    u_usb_out = middle*vcc*7/6400;
     
     //read usb output current,
     middle = read_adc(3, I_USB1_ADC);
@@ -614,7 +648,7 @@ void read_info()
     uint16_t temp_adc = read_adc(3, 0b1000);
     
     // Calculate the temperature in C,
-    temp_0 = (temp_adc-TEMP_OFFSET)*5/6;
+    temp_0 = (temp_adc/2-TEMP_OFFSET)*5/6;
 }
 
 #endif
