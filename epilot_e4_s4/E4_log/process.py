@@ -58,6 +58,9 @@ for n in range(i_load.shape[0]):
         offset_1 = n
         break
 
+print(offset_0)
+print(offset_1)
+
 # time_pc1 = time_pc1[offset_1:-1]
 # time_m32 = time_m32[offset_1:-1]
 # u_load = u_load[offset_1:-1]
@@ -83,9 +86,10 @@ l_u4, = plt.plot(time_pc0, u_b4, label='b4')
 l_u_load, = plt.plot(time_pc1, u_load, label='u_load')
 plt.legend(handles=[l_vcc, l_usb_in, l_usb_out, l_u1, l_u2, l_u3, l_u4, l_u_load], loc='lower center')
 
-plt.title('Eploit E4, mixed cells, discharge voltage plot at 0.7A')
+plt.title('Eploit E4, discharge voltage plot at 0.7A')
 plt.xlabel('time, H')
 plt.ylabel('voltage, mV')
+plt.grid()
 
 #plt.show()
 
@@ -97,10 +101,10 @@ l_i2, = plt.plot(time_pc0, i_2, label='i2')
 l_i_load, = plt.plot(time_pc1, i_load, label='i_load')
 plt.legend(handles=[l_i1, l_i2, l_i_load], loc='center')
 
-plt.title('Eploit E4, mixed cells, discharge current plot')
+plt.title('Eploit E4, discharge current plot')
 plt.xlabel('time, H')
 plt.ylabel('current, mA')
-
+plt.grid()
 # plt.show()
 
 
@@ -112,6 +116,8 @@ power_load = zeros(u_load.shape[0])
 
 for n in range(1, u_load.shape[0]):
     power_load[n] = power_load[n - 1] + u_load[n] * i_load[n] * (time_pc1[n] - time_pc1[n - 1]) / 1000
+
+print(power_load[-1])
 
 #  re-calculate power_load_1 using time_pc0, i_1, power_load_2 using time_pc0 and i_2
 
@@ -192,7 +198,7 @@ for i in range(power_scale_time.shape[0]):
 plt.title('Eploit E4, voltage at each capacity level')
 plt.xlabel('time, H')
 plt.ylabel('voltage, mV')
-
+plt.grid()
 # f5 = plt.figure(5)
 # plt.plot(time_pc1, power_load)
 # plt.plot(power_scale_time, power_scale_load, '*')
@@ -200,14 +206,42 @@ plt.ylabel('voltage, mV')
 
 
 ############################################################
+
+# apply - 134mv for M4
+power_scale_u_exp = power_scale_u_exp - 134
+
 # export battery level to txt file
 np.savetxt('battery_scale.txt', power_scale_u_exp, delimiter='\n', fmt='%4d')
 
-# export battery level to eeprom binary
-power_scale_eeprom = power_scale_u_exp.astype(int16)
+# export battery level to eeprom binary for avr (E4 and S4)
+# power_scale_eeprom = power_scale_u_exp.astype(int16)
 OutputFile = open("eeprom.bin", 'wb')
-BlockArray = np.array(power_scale_eeprom).astype(np.uint16)
-BlockArray.tofile(OutputFile)
+scale_eeprom = np.array(power_scale_u_exp).astype(np.uint16)
+scale_eeprom.tofile(OutputFile)
+OutputFile.close()
+
+# export battery level to eeprom hex text for pic (M4)
+
+# read eeprom.bin as binary
+InputFile = open('eeprom.bin', 'rb')
+binary_data = InputFile.read()
+
+# print(len(binary_data))
+
+OutputFile = open("eeprom.hex.txt", 'w')
+
+hex_line = int(len(binary_data) / 8)
+
+for i in range(hex_line):
+    line_w = "__EEPROM_DATA("
+
+    for n in range(8):
+        line_w = line_w + hex(binary_data[i*8+n]) + ", "
+
+    line_w = line_w[:-2]
+    line_w = line_w + ");\n"
+    OutputFile.write(line_w)
+
 OutputFile.close()
 
 # print(type(power_scale_eeprom))
