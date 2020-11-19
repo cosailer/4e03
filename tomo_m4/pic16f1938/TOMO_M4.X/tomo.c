@@ -299,7 +299,22 @@ void optimize_power(void)
 }
 
 //take adc measurements, ref 1: AVcc, 3: 1.1v, ch 0-8
+//averaging 4 measurements
 uint16_t read_adc(uint8_t ref, uint8_t ch)
+{
+    uint8_t size = 4;
+    uint16_t adc = 0;
+    
+    for(int i = 0; i < size; i++)
+    {
+        adc = adc + read_adc_once(ref, ch);
+    }
+    
+    return adc/size;
+}
+
+//take adc measurements, ref 1: AVcc, 3: 1.1v, ch 0-8
+uint16_t read_adc_once(uint8_t ref, uint8_t ch)
 {
     uint16_t result = 0;
     
@@ -316,10 +331,18 @@ uint16_t read_adc(uint8_t ref, uint8_t ch)
     
     __delay_ms(2);
     
-    ADCON0bits.GO_nDONE = 1;         //start conversion 
-    while(ADCON0bits.GO_nDONE == 1); //wait conversion
+    //over sampling, increase adc from 10bit to 11bit virtual
+    //sum up 4 reading, right shift 1bit, divide2^11
+    for(int i = 0; i < 4; i++)
+    {
+        ADCON0bits.GO_nDONE = 1;         //start conversion 
+        while(ADCON0bits.GO_nDONE == 1); //wait conversion
     
-    result = (uint16_t)((ADRESH << 8) + ADRESL);
+        result += (uint16_t)((ADRESH << 8) + ADRESL);
+    }
+    
+    result = result >> 1;
+    
     return result;
 }
 
@@ -328,7 +351,7 @@ uint16_t read_adc(uint8_t ref, uint8_t ch)
 uint16_t calc_voltage(uint32_t raw)
 {
     uint16_t tmp = 0;
-    middle = raw*vcc/512;
+    middle = raw*vcc/1024;
     
     tmp = (uint16_t)middle;
     tmp = limit16(tmp, 0, 9999);
@@ -355,14 +378,48 @@ uint8_t calc_scale(uint16_t voltage)
     return tmp;
 }
 
+//match the voltage to the list stored in the eeprom
+// address |0       |2       |4       |...
+// level   |  100   |   99   |   98   |...
+// data    |uint16_t|uint16_t|uint16_t|...
+uint8_t search_bat_eeprom(uint16_t voltage)
+{
+    //8bit address from 0 -> 198
+    uint8_t bat_addr = 0;
+    
+    uint8_t scale = 0;
+    uint8_t read_L = 0;
+    uint8_t read_H = 0;
+    uint16_t reading = 0;
+    
+    
+    for(int i = 0; i < 100; i++)
+    {
+        read_L = eeprom_read( bat_addr );
+        read_H = eeprom_read( bat_addr+1 );
+    
+        reading = (uint16_t)(read_H << 8) + read_L;
+        
+        if(reading <= voltage)
+        {
+            scale = (uint8_t)(100 - i);
+            break;
+        }
+        
+        bat_addr+=2;
+    }
+    
+    return scale;
+}
+
 void read_info()
 {
     update_timer();
     //read controller vcc
     //set reference to AVcc
-    //channel 0b11111 is the 1.024v reference
+    //channel 0b11111 is the 1.024v reference, 1024*2048
     middle = read_adc(0, 0b11111);
-    vcc = (uint16_t)(1048576/middle);
+    vcc = (uint16_t)(2097152/middle);
     
     //load detection
     //load_det = LOAD_BUTTON_PIN;
@@ -372,26 +429,26 @@ void read_info()
     
     middle = read_adc(0, U_BAT1_ADC);
     u_b1 = calc_voltage(middle);
-    l_b1 = calc_scale(u_b1);
+    l_b1 = search_bat_eeprom(u_b1);
     
     middle = read_adc(0, U_BAT2_ADC);
     u_b2 = calc_voltage(middle);
-    l_b2 = calc_scale(u_b2);
+    l_b2 = search_bat_eeprom(u_b2);
     
     middle = read_adc(0, U_BAT3_ADC);
     u_b3 = calc_voltage(middle);
-    l_b3 = calc_scale(u_b3);
+    l_b3 = search_bat_eeprom(u_b3);
     
     middle = read_adc(0, U_BAT4_ADC);
     u_b4 = calc_voltage(middle);
-    l_b4 = calc_scale(u_b4);
+    l_b4 = search_bat_eeprom(u_b4);
     
     l_main = (l_b1+l_b2+l_b3+l_b4)/4;
     
     middle = read_adc(0, CHARGE_DET_PIN);
     u_usb_in = calc_voltage(middle);
     
-    if(u_usb_in > USB_DET_MIN)https://p1-play.edge4k.com/img/potplayer.png
+    if(u_usb_in > USB_DET_MIN)
         { charge_det = 1; }
     else
         { charge_det = 0; }
@@ -405,16 +462,16 @@ void read_info()
     }
     
     //read usb output voltage
-    //due to voltage divider, v_usb*vcc*2.96/1024
+    //due to voltage divider, v_usb*vcc*2.96/2048
     middle = read_adc(0, U_USB_ADC);
-    u_usb_out = middle*vcc*37/12800;
+    u_usb_out = middle*vcc*37/25600;
     
     //read usb output current,
     //set voltage reference to 1.024v at 0b11
-    i_usb_1 = read_adc(0b11, I_USB1_ADC) * 10;
-    i_usb_2 = read_adc(0b11, I_USB2_ADC) * 20;
+    i_usb_1 = read_adc(0b11, I_USB1_ADC) * 5;
+    i_usb_2 = read_adc(0b11, I_USB2_ADC) * 10;
     
-    load_det = (i_usb_1 > 30)||(i_usb_2 > 60);
+    load_det = (i_usb_1 > 0)||(i_usb_2 > 0);
     
     //reset timer for system timeout
     if( load_det != load_det_last)
@@ -433,7 +490,7 @@ void read_info()
     //middle_f = ((0.659-vcc*(1-temp_adc/1023)/2)/0.00132)-40;
     
     //just take a scale between 0-100
-    temp_0 = (int16_t)(middle*25/256);
+    temp_0 = (int16_t)(middle*25/512);
     
     //load_button_det = LOAD_BUTTON_PIN;
 }

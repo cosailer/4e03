@@ -10,6 +10,8 @@
 #include <stdint.h>
 #include <st7565.h>
 #include <tomo.h>
+#include <table.h>
+
 
 // CONFIG
 #pragma config FOSC = INTOSC    // Oscillator Selection bits (INTRC oscillator; port I/O function on both RA6/OSC2/CLKO pin and RA7/OSC1/CLKI pin)
@@ -91,6 +93,8 @@ void add_battery(uint16_t voltage, uint8_t level, uint8_t charge_status, uint8_t
     draw_char(bat, offset+6, 17, font_small);
 }
 
+uint8_t bat_addr = 0;
+
 void add_right_panel(void)
 {
     sprintf(buffer, "%s%4d", "I1:", i_usb_1);
@@ -111,6 +115,14 @@ void add_right_panel(void)
     //timer info
     sprintf(buffer, "%02d%02d%02d", hour, minute, second);
     draw_text(buffer, 75, 0, font_small, 1);
+    
+    //eeprom debug
+    //uint8_t read_L = eeprom_read( bat_addr );
+    //uint8_t read_H = eeprom_read( bat_addr+1 );
+    //uint16_t reading = (read_H << 8) + read_L;
+    //sprintf(buffer, "%d", reading);
+    //draw_text(buffer, 75, 6, font_small, 1);
+    //bat_addr+=2;
 }
 
 //widget icon: input charging, output load, boost converter, temperature
@@ -174,7 +186,9 @@ void sleep_shutdown(void)
     SLEEP();
     
     //wake up here
-    init_lcd();
+    glcd_init();
+    glcd_clear_buffer();
+    glcd_contrast(3, 45);   // max (7, 63)
     reset_clock();          //reset the timer
 }
 
@@ -264,7 +278,7 @@ void main(void)
             //if no current draw at both usb outputs
             //disable usb output 30 seconds after enabled
             //system goes to sleep after 60 seconds
-            if( ( i_usb_1 <= 30 )&&( i_usb_2 <= 60 ) )
+            if( ( i_usb_1 == 0 )&&( i_usb_2 == 0 ) )
             {
                 i_timer_current = get_ms_32();
                 i_timer_diff = i_timer_current - i_timer_start;

@@ -52,7 +52,7 @@
 #define  BACKLIT_VALUE     0     //display brightness (0-255, inverted), 200
 
 //the time constant is multipiler of 32ms
-#define  LCD_UPDATE_T      15    //display update interval, 500ms, 500/32=15
+#define  LCD_UPDATE_T      10    //display update interval, 500ms, 500/32=15
 #define  BACKLIT_T         937   //display back light on time, 30s, 30000/32=937
 #define  USB_TIMEOUT       1800  //if no current draw, disable usb output __s after enabled
 #define  SYS_TIMEOUT       1875  //put system to sleep after 60s, unless cells are charging or usb output nonzero, 60000/32=1875
@@ -140,8 +140,10 @@ void read_info();
 
 uint32_t get_ms_32(void);
 uint16_t calc_voltage(uint32_t raw);
+ uint8_t search_bat_eeprom(uint16_t voltage);
  uint8_t calc_scale(uint16_t voltage);
 uint16_t read_adc(uint8_t ref, uint8_t ch);
+uint16_t read_adc_once(uint8_t ref, uint8_t ch);
 
 volatile uint32_t ms_32_count = 0;
 

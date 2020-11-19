@@ -7,6 +7,7 @@
         <itemPath>st7565/st7565.h</itemPath>
       </logicalFolder>
       <itemPath>tomo.h</itemPath>
+      <itemPath>table.h</itemPath>
     </logicalFolder>
     <logicalFolder displayName="Linker Files" name="LinkerScript" projectFiles="true">
     </logicalFolder>
